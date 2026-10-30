@@ -1,0 +1,26 @@
+{
+  "name": "BRSP: Bioinformatics Research Starter Program",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
+  "hostRequirements": {
+    "cpus": 2
+  },
+  "containerEnv": {
+    "JAVA_TOOL_OPTIONS": "-Xlog:disable -Xlog:all=warning:stderr"
+  },
+  "remoteEnv": {
+    "PATH": "/home/vscode/brsp-env/bin:${containerEnv:PATH}"
+  },
+  "postCreateCommand": "bash .devcontainer/setup.sh",
+  "waitFor": "postCreateCommand",
+  "customizations": {
+    "codespaces": {
+      "openFiles": ["README.md"]
+    },
+    "vscode": {
+      "extensions": ["mechatroner.rainbow-csv"],
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash"
+      }
+    }
+  }
+}
