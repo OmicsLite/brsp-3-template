@@ -1,0 +1,16 @@
+# Downloads (easy to get again, and large)
+*.zip
+*_download/
+ncbi_dataset/
+*.fna
+
+# Large Prokka files you don't need to keep in GitHub
+*.gbk
+*.sqn
+*.fsa
+*.tbl
+*.err
+
+# System files
+.DS_Store
+__pycache__/
