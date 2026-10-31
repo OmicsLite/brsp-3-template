@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # BRSP codespace setup: runs once, automatically, when a codespace is created.
-# Installs Prokka and NCBI Datasets into their own environment (~/brsp-env).
+# Installs the BRSP tools into their own environment (~/brsp-env):
+#   Week 2: Prokka, NCBI Datasets   Week 3: seqkit, MAFFT, FastTree
 # Full log: ~/brsp-setup.log
 set -euo pipefail
 
@@ -26,7 +27,7 @@ export MAMBA_ROOT_PREFIX="$MM_DIR/root"
 
 "$MM_DIR/bin/micromamba" create -y -q -p "$ENV_DIR" \
   -c conda-forge -c bioconda --strict-channel-priority \
-  prokka=1.15.6 ncbi-datasets-cli >> "$LOG" 2>&1
+  prokka=1.15.6 ncbi-datasets-cli seqkit mafft fasttree >> "$LOG" 2>&1
 
 # Free disk space: remove downloaded package files (the tools stay installed)
 "$MM_DIR/bin/micromamba" clean -y -a >> "$LOG" 2>&1 || true
@@ -47,4 +48,7 @@ export PATH="$ENV_DIR/bin:$PATH"
 export JAVA_TOOL_OPTIONS="-Xlog:disable -Xlog:all=warning:stderr"
 prokka --version
 datasets --version
+seqkit version
+mafft --version
+FastTree -expert 2>&1 | head -n 1
 echo "BRSP setup complete. Open a terminal and start with week2/week2_annotation.sh"

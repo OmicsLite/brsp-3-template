@@ -11,6 +11,12 @@ ncbi_dataset/
 *.tbl
 *.err
 
+# Index files seqkit makes
+*.fai
+
+# Teaching team's full Prokka runs for the Week 3 example data
+week3/prep/
+
 # System files
 .DS_Store
 __pycache__/

@@ -26,7 +26,7 @@ Next time, go to **Code → Codespaces** and click your existing codespace. It r
 | Week | Guide |
 |---|---|
 | 2 · Genome annotation | [`week2/week2_annotation.sh`](week2/week2_annotation.sh) |
-| 3 · Phylogenetics | *coming in Week 3* |
+| 3 · Phylogenetics | [`week3/week3_phylogenetics.sh`](week3/week3_phylogenetics.sh) |
 | 4–5 · Your project | *coming in Week 4* |
 
 **How to follow a guide:** open it in the editor, then copy one block at a time into the terminal. Shortcut: select the lines and press **Ctrl+Shift+P → "Terminal: Run Selected Text in Active Terminal"**.

@@ -22,6 +22,7 @@
 # -----------------------------------------------------------------------------
 # Run this block at the start of every session.
 
+mkdir -p "$(git rev-parse --show-toplevel)/week2"
 cd "$(git rev-parse --show-toplevel)/week2"
 pwd
 prokka --version
