@@ -1,8 +1,0 @@
-organism: Escherichia coli K-12 
-contigs: 1
-bases: 4641652
-CDS: 4305
-rRNA: 22
-repeat_region: 2
-tRNA: 88
-tmRNA: 1
