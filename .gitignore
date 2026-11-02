@@ -1,22 +1,22 @@
-# Downloads (easy to get again, and large)
+# Unduhan (mudah diunduh ulang, dan berukuran besar)
 *.zip
 *_download/
 ncbi_dataset/
 *.fna
 
-# Large Prokka files you don't need to keep in GitHub
+# File Prokka berukuran besar yang tidak perlu disimpan di GitHub
 *.gbk
 *.sqn
 *.fsa
 *.tbl
 *.err
 
-# Index files seqkit makes
+# File indeks buatan seqkit
 *.fai
 
-# Teaching team's full Prokka runs for the Week 3 example data
+# Hasil lengkap Prokka tim pengajar untuk data contoh Minggu 3
 week3/prep/
 
-# System files
+# File sistem
 .DS_Store
 __pycache__/
