@@ -55,7 +55,8 @@ GitHub memberi akun pribadi jatah jam Codespaces gratis setiap bulan. Jatah ini 
 | Masalah | Solusi |
 |---|---|
 | `command not found: prokka` | Buka terminal **baru**. Masih tidak ada? Cek log setup: `tail -n 20 ~/brsp-setup.log` |
-| Setup gagal saat membuat codespace | Hubungi TA-mu, sertakan 20 baris terakhir dari `~/brsp-setup.log` |
+| Muncul pesan **SETUP BRSP GAGAL**, atau tools tidak ditemukan | Jalankan ulang setup di terminal: `bash .devcontainer/setup.sh` (sekitar 2–5 menit). Masih gagal? Kirim 20 baris terakhir dari `~/brsp-setup.log` ke TA-mu |
+| Codespace terbuka dalam **recovery mode** | Tekan **Ctrl+Shift+P** (Mac: **Cmd+Shift+P**) → **Codespaces: Rebuild Container** |
 | Codespace tidak mau jalan, atau jam gratis habis | Hapus codespace lama di [github.com/codespaces](https://github.com/codespaces), lalu hubungi TA-mu |
 
 Untuk masalah lain, tulis di grup WhatsApp dengan menyertakan: langkah yang sedang dikerjakan, pesan error lengkap (salin-tempel), dan apa saja yang sudah kamu coba.
