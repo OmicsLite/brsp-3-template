@@ -1,0 +1,7 @@
+organism: Shigella flexneri 2a_str._301 
+contigs: 2
+bases: 4828820
+CDS: 4990
+rRNA: 22
+tRNA: 96
+tmRNA: 1

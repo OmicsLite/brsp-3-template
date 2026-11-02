@@ -1,0 +1,7 @@
+organism: Klebsiella pneumoniae HS11286 
+contigs: 7
+bases: 5682322
+CDS: 5451
+rRNA: 25
+tRNA: 88
+tmRNA: 1
