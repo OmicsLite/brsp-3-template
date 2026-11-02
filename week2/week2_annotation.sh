@@ -4,14 +4,14 @@
 #  OmicsLite · Bioinformatics Research Starter Program · versi Codespaces
 # =============================================================================
 #
-#  CARA MEMAKAI FILE INI
+#  CARA MENGGUNAKAN FILE INI
 #  - Buka terminal di codespace-mu: menu ☰ → Terminal → New Terminal.
-#  - Salin SATU blok setiap kali (di antara garis putus-putus), tempel ke
+#  - Copy SATU blok setiap kali (di antara garis putus-putus), paste ke
 #    terminal, tekan Enter, lalu tunggu sampai selesai sebelum lanjut ke blok
 #    berikutnya.
-#    Jalan pintas: blok baris yang ingin dijalankan, tekan Ctrl+Shift+P →
+#    Shortcut: blok baris yang ingin dijalankan, tekan Ctrl+Shift+P →
 #    "Terminal: Run Selected Text in Active Terminal".
-#  - Baris yang diawali tanda # adalah catatan untukmu. Ikut tertempel pun
+#  - Baris yang diawali tanda # adalah catatan (comment) untukmu. Ikut ter-paste pun
 #    tidak masalah.
 #  - Bandingkan hasilmu dengan catatan "YANG SEHARUSNYA KAMU LIHAT".
 #
@@ -40,7 +40,7 @@ datasets --version
 
 
 # -----------------------------------------------------------------------------
-# LANGKAH 2  Unduh genom contoh
+# LANGKAH 2  Unduh genome contoh
 # -----------------------------------------------------------------------------
 # E. coli K-12 MG1655, aksesi GCF_000005845.2. Kita hanya mengunduh FASTA
 # genomnya (--include genome), tanpa anotasi dari NCBI: menganotasi genom
@@ -121,7 +121,7 @@ tail -n 3 prokka_run.log
 
 
 # -----------------------------------------------------------------------------
-# LANGKAH 5  Jelajahi hasilnya  (pelajaran 2.4)
+# LANGKAH 5  Jelajahi hasilnya  
 # -----------------------------------------------------------------------------
 #   .txt  ringkasan jumlah fitur          .gff  semua fitur beserta posisinya
 #   .tsv  satu baris per fitur            .gbk  fitur + sekuens (GenBank)
@@ -146,19 +146,19 @@ head -n 10 ecoli_k12/ecoli_k12.tsv
 
 
 # -----------------------------------------------------------------------------
-# LANGKAH 6  Cari gen tertentu  (pelajaran 2.4)
+# LANGKAH 6  Cari gen tertentu  
 # -----------------------------------------------------------------------------
 
-# lacZ: beta-galaktosidase, dari operon lac
+# lacZ: beta-galaktosidase, dari lac-operon
 grep -w "lacZ" ecoli_k12/ecoli_k12.tsv
 
-# Di mana letaknya? Kolom: sekuens, tipe, awal, akhir, untai (strand)
+# Di mana letaknya? Kolom: sequence, type, start, end, strand
 grep "gene=lacZ;" ecoli_k12/ecoli_k12.gff | cut -f1,3,4,5,7
 
 # Kalau lacZ tidak ditemukan berdasarkan nama, cari berdasarkan produknya:
 #   grep -i "beta-galactosidase" ecoli_k12/ecoli_k12.tsv
 
-# 16S rRNA: gen yang akan kita pakai untuk membuat pohon di Minggu 3
+# 16S rRNA: gen yang akan kita pakai untuk membuat pohon filogenetik di Minggu 3
 grep "16S ribosomal RNA" ecoli_k12/ecoli_k12.tsv
 grep -c "16S ribosomal RNA" ecoli_k12/ecoli_k12.tsv
 
@@ -171,9 +171,9 @@ grep -c "16S ribosomal RNA" ecoli_k12/ecoli_k12.tsv
 
 
 # -----------------------------------------------------------------------------
-# LANGKAH 7  Cek kewajaran anotasi  (pelajaran 2.5)
+# LANGKAH 7  Cek kewajaran anotasi  
 # -----------------------------------------------------------------------------
-# Tiga uji: kepadatan gen (~1 gen per kb), persentase protein hipotetis,
+# Tiga uji: gene density (~1 gene per kb), persentase hypothetical protein,
 # dan jumlah rRNA/tRNA dibandingkan dengan yang sudah diketahui untuk
 # organisme ini.
 
@@ -197,7 +197,7 @@ awk -v len="$LEN" -v cds="$CDS" -v hypo="$HYPO" -v rrna="${RRNA:-0}" \
 
 # BANDINGKAN DENGAN NCBI
 # Buka https://www.ncbi.nlm.nih.gov/datasets/genome/GCF_000005845.2/
-# lalu cari bagian "Annotation details". Catat jumlah gen penyandi protein,
+# lalu cari bagian "Annotation details". Catat jumlah protein-coding genes,
 # rRNA, dan tRNA dari NCBI di samping hasilmu. Selisih beberapa persen saja
 # berarti hasilmu bagus.
 #
@@ -222,7 +222,7 @@ git status
 #   "Your branch is up to date with 'origin/main'"
 #   Muat ulang halaman repo-mu di GitHub: folder week2 sekarang berisi hasilmu.
 #
-# Sudah selesai untuk hari ini? Hentikan codespace agar jam gratismu awet:
+# Sudah selesai untuk hari ini? Hentikan codespace agar jatah gratis kita awet:
 #   github.com/codespaces → ⋯ di samping codespace-mu → Stop codespace
 
 
