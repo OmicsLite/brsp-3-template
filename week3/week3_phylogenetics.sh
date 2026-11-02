@@ -1,24 +1,24 @@
 #!/usr/bin/env bash
 # =============================================================================
-#  BRSP Minggu 3: Membuat Pohon Filogenetik dari 16S rRNA
+#  BRSP Minggu 3: Membuat Phylogenetic Tree dari 16S rRNA
 #  OmicsLite · Bioinformatics Research Starter Program · versi Codespaces
 # =============================================================================
 #
 #  POSISI KITA DALAM PIPELINE
-#    Genom → Anotasi (Minggu 2) → Ekstraksi 16S → Alignment → Pohon → iTOL
-#                                 ▲ minggu ini mencakup semua tahap ini
+#    Genome → Annotation (Minggu 2) → 16S extraction → Alignment → Tree → iTOL
+#                                     ▲ minggu ini mencakup semua tahap ini
 #
 #  PERTANYAANNYA
-#    Apakah kelima bakteri ini mengelompok sesuai dengan taksonominya?
+#    Apakah kelima bakteri ini mengelompok sesuai dengan taxonomy-nya?
 #
-#    Escherichia coli K-12          genom Minggu 2-mu
-#    Shigella flexneri 301          kerabat yang terkenal "mengejutkan"
-#    Salmonella enterica LT2        kerabat dekat
-#    Klebsiella pneumoniae HS11286  kerabat yang lebih jauh
-#    Pseudomonas aeruginosa PAO1    OUTGROUP (dari ordo yang berbeda sama sekali)
+#    Escherichia coli K-12          genome Minggu 2-mu
+#    Shigella flexneri 301          relative yang terkenal "mengejutkan"
+#    Salmonella enterica LT2        close relative
+#    Klebsiella pneumoniae HS11286  relative yang lebih jauh
+#    Pseudomonas aeruginosa PAO1    OUTGROUP (dari order yang berbeda sama sekali)
 #
-#  Keempat kerabat ini sudah dianotasi dengan Prokka untukmu, memakai
-#  pengaturan yang sama dengan Minggu 2. Sekuens gen mereka (.ffn) ada di
+#  Keempat relative ini sudah di-annotate dengan Prokka untukmu, memakai
+#  pengaturan yang sama dengan Minggu 2. Gene sequence mereka (.ffn) ada di
 #  week3/data/.
 #
 #  CARA MEMAKAI FILE INI
@@ -55,45 +55,45 @@ FastTree -expert 2>&1 | head -n 1
 # -----------------------------------------------------------------------------
 # LANGKAH 2  Lihat data contoh
 # -----------------------------------------------------------------------------
-# File .ffn berisi sekuens DNA setiap gen yang ditemukan Prokka (Minggu 2,
-# Langkah 5). File keempat kerabat dikompres (.gz); seqkit bisa membacanya
+# File .ffn berisi DNA sequence setiap gene yang ditemukan Prokka (Minggu 2,
+# Langkah 5). File keempat relative dikompres (.gz); seqkit bisa membacanya
 # langsung.
 
 ls -lh data/
 
-# Gen E. coli-mu sendiri dari Minggu 2:
+# Gene E. coli-mu sendiri dari Minggu 2:
 ls -lh ../week2/ecoli_k12/ecoli_k12.ffn
 
-# Ada berapa gen 16S rRNA di setiap genom?
+# Ada berapa 16S rRNA gene di setiap genome?
 for f in ../week2/ecoli_k12/ecoli_k12.ffn data/*.ffn.gz; do
   printf "%-45s %s\n" "$f" "$(seqkit grep -n -r -p '16S ribosomal RNA' "$f" | grep -c '>')"
 done
 
 # YANG SEHARUSNYA KAMU LIHAT
 #   Empat file .ffn.gz di data/, ditambah ecoli_k12.ffn dari Minggu 2.
-#   Beberapa salinan 16S per genom (E. coli punya 7). Bakteri memang sering
-#   membawa beberapa salinan gen rRNA.
+#   Beberapa 16S copy per genome (E. coli punya 7). Bakteri memang sering
+#   membawa beberapa copy rRNA gene.
 #
 # Muncul "No such file" untuk ecoli_k12.ffn? Hasil Minggu 2-mu tidak ada di
 # codespace ini. Ulangi Langkah 2 dan 4 dari Minggu 2, lalu kembali ke sini.
 
 
 # -----------------------------------------------------------------------------
-# LANGKAH 3  Ambil satu 16S per genom  (pelajaran 3.3)
+# LANGKAH 3  Ambil satu 16S per genome  (pelajaran 3.3)
 # -----------------------------------------------------------------------------
-# Pohon filogenetik butuh SATU sekuens yang bisa dibandingkan untuk setiap
-# organisme. Kita pilih salinan 16S yang TERPANJANG (paling mungkin
-# lengkap) lalu menamainya dengan nama spesies, sehingga pohonnya
-# menampilkan "Escherichia_coli_K12", bukan "ECOLI_04012".
+# Phylogenetic tree butuh SATU sequence yang bisa dibandingkan untuk setiap
+# organisme. Kita pilih 16S copy yang TERPANJANG (paling mungkin full-length)
+# lalu menamainya dengan nama spesies, sehingga tree-nya menampilkan
+# "Escherichia_coli_K12", bukan "ECOLI_04012".
 #
 # Pertama untuk E. coli, satu perintah setiap kali, agar kamu bisa melihat
 # fungsi masing-masing bagian:
 
-# 3a. Cari semua gen 16S (-n: cari di seluruh header, -r: boleh cocok sebagian)
+# 3a. Cari semua 16S gene (-n: cari di seluruh header, -r: boleh partial match)
 seqkit grep -n -r -p "16S ribosomal RNA" ../week2/ecoli_k12/ecoli_k12.ffn > ecoli_16S_all.fasta
 seqkit stats ecoli_16S_all.fasta
 
-# 3b. Urutkan dari yang terpanjang, ambil yang pertama, lalu ganti namanya
+# 3b. Urutkan dari yang terpanjang, ambil yang pertama, lalu ganti header-nya
 seqkit sort --quiet --by-length --reverse ecoli_16S_all.fasta \
   | seqkit head -n 1 \
   | seqkit replace -p '.+' -r 'Escherichia_coli_K12' > Escherichia_coli_K12_16S.fasta
@@ -101,10 +101,10 @@ seqkit stats Escherichia_coli_K12_16S.fasta
 head -n 2 Escherichia_coli_K12_16S.fasta
 
 # YANG SEHARUSNYA KAMU LIHAT
-#   3a: 7 sekuens, masing-masing sekitar 1.500 bp
-#   3b: 1 sekuens, sekitar 1.540 bp, dengan header >Escherichia_coli_K12
+#   3a: 7 sequence, masing-masing sekitar 1.500 bp
+#   3b: 1 sequence, sekitar 1.540 bp, dengan header >Escherichia_coli_K12
 
-# Sekarang tiga langkah yang sama untuk keempat kerabat, dalam satu loop:
+# Sekarang tiga langkah yang sama untuk keempat relative, dalam satu loop:
 for pair in \
   "shigella_flexneri_301:Shigella_flexneri_301" \
   "salmonella_enterica_LT2:Salmonella_enterica_LT2" \
@@ -118,11 +118,11 @@ for pair in \
 done
 ls *_16S.fasta
 
-# CHECKPOINT: mengapa kita butuh tepat satu sekuens per organisme?
+# CHECKPOINT: mengapa kita butuh tepat satu sequence per organisme?
 
 
 # -----------------------------------------------------------------------------
-# LANGKAH 4  Gabungkan kelima sekuens 16S
+# LANGKAH 4  Gabungkan kelima 16S sequence
 # -----------------------------------------------------------------------------
 
 cat Escherichia_coli_K12_16S.fasta Shigella_flexneri_301_16S.fasta \
@@ -131,27 +131,27 @@ cat Escherichia_coli_K12_16S.fasta Shigella_flexneri_301_16S.fasta \
 seqkit fx2tab -n -l all_16S.fasta
 
 # YANG SEHARUSNYA KAMU LIHAT
-#   Lima nama, masing-masing dengan panjang sekitar 1.500 bp.
-#   Kalau ada baris yang hilang atau bernilai 0, 16S genom itu tidak
+#   Lima nama, masing-masing dengan length sekitar 1.500 bp.
+#   Kalau ada baris yang hilang atau bernilai 0, 16S dari genome itu tidak
 #   ditemukan: cek Langkah 3.
 
 
 # -----------------------------------------------------------------------------
 # LANGKAH 5  Alignment dengan MAFFT  (pelajaran 3.4)
 # -----------------------------------------------------------------------------
-# Alignment menjajarkan kelima sekuens sehingga setiap kolom berisi posisi
+# Alignment menjajarkan kelima sequence sehingga setiap kolom berisi posisi
 # yang "sama" pada setiap organisme, dengan menyisipkan gap (-) di tempat
-# suatu sekuens punya basa tambahan atau kekurangan basa. Baru setelah itu
+# suatu sequence punya base tambahan atau kekurangan base. Baru setelah itu
 # kita bisa membandingkannya posisi demi posisi.
 
 mafft --auto all_16S.fasta > aligned_16S.fasta 2> mafft.log
 seqkit fx2tab -n -l aligned_16S.fasta
 
 # YANG SEHARUSNYA KAMU LIHAT
-#   Lima nama yang sama, sekarang SEMUANYA dengan panjang yang SAMA (sedikit
-#   lebih panjang dari sebelumnya karena ada gap). Panjang yang sama berarti
+#   Lima nama yang sama, sekarang SEMUANYA dengan length yang SAMA (sedikit
+#   lebih panjang dari sebelumnya karena ada gap). Length yang sama berarti
 #   alignment-nya valid.
-#   MAFFT menulis hurufnya dalam huruf kecil (a, c, g, t). Itu normal.
+#   MAFFT menulis base-nya dalam huruf kecil (a, c, g, t). Itu normal.
 #
 # Lihat sepotong alignment, 60 kolom mulai dari posisi 1000:
 seqkit subseq --quiet -r 1000:1060 aligned_16S.fasta | seqkit seq -w 0
@@ -161,13 +161,13 @@ seqkit subseq --quiet -r 1000:1060 aligned_16S.fasta | seqkit seq -w 0
 
 
 # -----------------------------------------------------------------------------
-# LANGKAH 6  Buat pohon dengan FastTree  (pelajaran 3.5)
+# LANGKAH 6  Buat tree dengan FastTree  (pelajaran 3.5)
 # -----------------------------------------------------------------------------
-#   -nt    sekuensnya berupa nukleotida (DNA), bukan protein
-#   -gtr   pakai model GTR untuk perubahan DNA dari waktu ke waktu
+#   -nt    sequence-nya berupa nucleotide (DNA), bukan protein
+#   -gtr   pakai GTR model untuk perubahan DNA dari waktu ke waktu
 #
-# FastTree menulis pohon dalam format Newick: kurung bersarang berisi nama
-# dan panjang cabang, dengan nilai support (0-1) setelah setiap kurung tutup.
+# FastTree menulis tree dalam format Newick: kurung bersarang berisi nama
+# dan branch length, dengan support value (0-1) setelah setiap kurung tutup.
 
 FastTree -nt -gtr aligned_16S.fasta > tree_16S.nwk 2> fasttree.log
 cat tree_16S.nwk
@@ -177,13 +177,12 @@ cat tree_16S.nwk
 #   (Escherichia_coli_K12:0.002,Shigella_flexneri_301:0.003,(Salmonella_...
 #
 #   Jangan khawatir kalau Pseudomonas tampak mengelompok dengan organisme
-#   lain di sini. FastTree membuat pohon TANPA AKAR (unrooted): pohon ini
-#   menunjukkan siapa yang dekat dengan siapa, tetapi tidak di mana pohon
-#   bermula. Kamu akan memperbaikinya dengan me-root pohon pada outgroup di
-#   Langkah 7.
+#   lain di sini. FastTree membuat UNROOTED tree: tree ini menunjukkan siapa
+#   yang dekat dengan siapa, tetapi tidak di mana tree bermula. Kamu akan
+#   memperbaikinya dengan me-root tree pada outgroup di Langkah 7.
 #
-# CHECKPOINT: angka tepat setelah ")" adalah nilai support. Apa artinya
-# kalau suatu kelompok bernilai 0.4?
+# CHECKPOINT: angka tepat setelah ")" adalah support value. Apa artinya
+# kalau suatu clade bernilai 0.4?
 
 
 # -----------------------------------------------------------------------------
@@ -191,23 +190,23 @@ cat tree_16S.nwk
 # -----------------------------------------------------------------------------
 # 1. Di daftar file sebelah kiri, buka week3, klik kanan tree_16S.nwk lalu
 #    pilih Download.
-# 2. Buka https://itol.embl.de lalu klik Upload. (Kamu bisa mengunggah tanpa
-#    akun; dengan akun gratis kamu bisa menyimpan pohon.)
-# 3. Unggah tree_16S.nwk.
-# 4. ROOT POHONNYA: klik label Pseudomonas_aeruginosa_PAO1 →
+# 2. Buka https://itol.embl.de lalu klik Upload. (Kamu bisa upload tanpa
+#    akun; dengan akun gratis kamu bisa menyimpan tree.)
+# 3. Upload tree_16S.nwk.
+# 4. ROOT TREE-NYA: klik label Pseudomonas_aeruginosa_PAO1 →
 #    Tree structure → Reroot the tree here.
-# 5. Tampilkan nilai support: Control panel (kanan) → Advanced → Bootstrap /
+# 5. Tampilkan support value: Control panel (kanan) → Advanced → Bootstrap /
 #    metadata → Display → "Text".
-# 6. Ekspor: Control panel → Export → PNG. Simpan sebagai tree_16S.png, lalu
-#    unggah ke folder week3-mu (seret file ke folder di sebelah kiri).
+# 6. Export: Control panel → Export → PNG. Simpan sebagai tree_16S.png, lalu
+#    upload ke folder week3-mu (seret file ke folder di sebelah kiri).
 #
 # YANG SEHARUSNYA KAMU LIHAT (setelah di-root)
-#   Pseudomonas sendirian di satu cabang, lalu Klebsiella, lalu Salmonella,
+#   Pseudomonas sendirian di satu branch, lalu Klebsiella, lalu Salmonella,
 #   lalu E. coli dan Shigella berdampingan sebagai pasangan terdekat.
 
 
 # -----------------------------------------------------------------------------
-# LANGKAH 8  Interpretasikan pohonnya  (pelajaran 3.7)
+# LANGKAH 8  Interpretasikan tree-nya  (pelajaran 3.7)
 # -----------------------------------------------------------------------------
 # Tulis jawaban singkat di file bernama week3/interpretation.md:
 #
@@ -215,13 +214,12 @@ cat tree_16S.nwk
 #     dengan dugaanmu berdasarkan namanya?
 #  2. Secara nama, Shigella adalah genus yang berbeda, tetapi letaknya tepat
 #     di samping (atau bahkan di dalam) E. coli. Cari tahu mengapa. Apakah
-#     ini masalah pada pohonnya, atau pada namanya?
-#  3. Lihat nilai support untuk kelompok E. coli + Shigella, dan panjang
-#     cabang di antara keduanya. Apakah 16S bisa membedakan keduanya dengan
-#     baik?
+#     ini masalah pada tree-nya, atau pada namanya?
+#  3. Lihat support value untuk clade E. coli + Shigella, dan branch length
+#     di antara keduanya. Apakah 16S bisa membedakan keduanya dengan baik?
 #  4. Mengapa kita membutuhkan Pseudomonas? Apa yang salah kalau tidak ada
 #     outgroup?
-#  5. Sebutkan satu keterbatasan membuat pohon dari satu gen saja.
+#  5. Sebutkan satu keterbatasan membuat tree dari satu gene saja.
 #
 # Buat file-nya lalu buka di editor:
 touch interpretation.md
@@ -234,7 +232,7 @@ code interpretation.md 2> /dev/null || echo "Buka week3/interpretation.md dari d
 
 cd "$(git rev-parse --show-toplevel)"
 git add week3
-git commit -m "Minggu 3: pohon 16S E. coli dan kerabatnya"
+git commit -m "Minggu 3: 16S tree E. coli dan relatives"
 git push
 git status
 
@@ -253,12 +251,12 @@ git status
 #
 #  "No such file" untuk data/*.ffn.gz
 #      Repo-mu dibuat sebelum data contoh ditambahkan. Minta file-nya ke TA,
-#      atau unduh dari repo template BRSP.
+#      atau download dari repo template BRSP.
 #
 #  Ada file *_16S.fasta yang kosong
 #      Pastikan nama file di loop Langkah 3 sama dengan nama file di data/.
 #
-#  Langkah 5: panjang sekuens berbeda-beda setelah MAFFT
+#  Langkah 5: length sequence berbeda-beda setelah MAFFT
 #      MAFFT tidak selesai. Baca penyebabnya: tail mafft.log
 #
 #  Langkah 6: tree_16S.nwk kosong
@@ -266,9 +264,9 @@ git status
 #      Biasanya alignment-nya kosong karena ada langkah sebelumnya yang gagal.
 #
 #  iTOL menolak file-nya
-#      Pastikan yang kamu unggah adalah tree_16S.nwk, bukan file .fasta.
+#      Pastikan yang kamu upload adalah tree_16S.nwk, bukan file .fasta.
 #
 #  Masih bingung? Tulis di grup WhatsApp dengan menyertakan: langkah yang
-#  sedang dikerjakan, pesan error lengkap (salin-tempel), dan apa saja yang
+#  sedang dikerjakan, pesan error lengkap (copy-paste), dan apa saja yang
 #  sudah kamu coba.
 # =============================================================================
