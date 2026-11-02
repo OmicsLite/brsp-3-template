@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # =============================================================================
-#  BRSP Minggu 2: Anotasi Genom Bakteri dengan Prokka
+#  BRSP Minggu 2: Genome Annotation Bakteri dengan Prokka
 #  OmicsLite · Bioinformatics Research Starter Program · versi Codespaces
 # =============================================================================
 #
@@ -11,8 +11,8 @@
 #    berikutnya.
 #    Shortcut: blok baris yang ingin dijalankan, tekan Ctrl+Shift+P →
 #    "Terminal: Run Selected Text in Active Terminal".
-#  - Baris yang diawali tanda # adalah catatan (comment) untukmu. Ikut ter-paste pun
-#    tidak masalah.
+#  - Baris yang diawali tanda # adalah catatan (comment) untukmu. Ikut
+#    ter-paste pun tidak masalah.
 #  - Bandingkan hasilmu dengan catatan "YANG SEHARUSNYA KAMU LIHAT".
 #
 #  Waktu yang dibutuhkan: sekitar 30 menit, sebagian besar menunggu Prokka.
@@ -40,11 +40,11 @@ datasets --version
 
 
 # -----------------------------------------------------------------------------
-# LANGKAH 2  Unduh genome contoh
+# LANGKAH 2  Download genome contoh
 # -----------------------------------------------------------------------------
-# E. coli K-12 MG1655, aksesi GCF_000005845.2. Kita hanya mengunduh FASTA
-# genomnya (--include genome), tanpa anotasi dari NCBI: menganotasi genom
-# adalah tugas kita.
+# E. coli K-12 MG1655, accession GCF_000005845.2. Kita hanya men-download
+# genome FASTA-nya (--include genome), tanpa annotation dari NCBI:
+# meng-annotate genome adalah tugas kita.
 
 datasets download genome accession GCF_000005845.2 --include genome \
   --filename ecoli_k12.zip
@@ -56,23 +56,23 @@ ls -lh ecoli_k12.fna
 #   File bernama ecoli_k12.fna, berukuran sekitar 4,5 MB.
 #   File ini juga muncul di daftar file sebelah kiri, di dalam folder week2.
 #
-# CHECKPOINT: mengapa kita mengunduh genom TANPA anotasi dari NCBI?
+# CHECKPOINT: mengapa kita men-download genome TANPA annotation dari NCBI?
 
 
 # -----------------------------------------------------------------------------
 # LANGKAH 3  Periksa input
 # -----------------------------------------------------------------------------
 
-# Ada berapa sekuens? (setiap sekuens diawali baris header '>')
+# Ada berapa sequence? (setiap sequence diawali header line '>')
 grep -c ">" ecoli_k12.fna
 
-# Baris header-nya
+# Header line-nya
 grep ">" ecoli_k12.fna
 
 # Beberapa baris pertama DNA
 head -n 4 ecoli_k12.fna
 
-# Panjang genom: buang baris header dan pindah baris, lalu hitung hurufnya
+# Genome length: buang header line dan pindah baris, lalu hitung base-nya
 grep -v ">" ecoli_k12.fna | tr -d '\n' | wc -c
 
 # YANG SEHARUSNYA KAMU LIHAT
@@ -81,24 +81,24 @@ grep -v ">" ecoli_k12.fna | tr -d '\n' | wc -c
 #   ...
 #   4641652
 #
-# Satu sekuens, sekitar 4,6 juta huruf, dan sama sekali tanpa label.
+# Satu sequence, sekitar 4,6 juta base, dan sama sekali tanpa label.
 #
-# CHECKPOINT: kalau ini genom draft, bagaimana angka pertama akan berbeda?
+# CHECKPOINT: kalau ini draft genome, bagaimana angka pertama akan berbeda?
 
 
 # -----------------------------------------------------------------------------
 # LANGKAH 4  Jalankan Prokka  (sekitar 10–15 menit)
 # -----------------------------------------------------------------------------
-#   --outdir / --prefix   lokasi hasil dan nama file-file hasilnya
-#   --kingdom Bacteria    pakai pengaturan untuk gen bakteri
-#   --genus/--species/--strain   beri label hasil dengan nama organismenya
-#   --locustag ECOLI      ID gen yang mudah dibaca, seperti ECOLI_00001
-#   --cpus 2              pakai 2 inti prosesor yang dimiliki codespace-mu
-#   --force               timpa folder hasil kalau kamu menjalankannya lagi
+#   --outdir / --prefix   lokasi output dan nama file-file output-nya
+#   --kingdom Bacteria    pakai pengaturan untuk bacterial gene
+#   --genus/--species/--strain   beri label output dengan nama organismenya
+#   --locustag ECOLI      gene ID yang mudah dibaca, seperti ECOLI_00001
+#   --cpus 2              pakai 2 CPU core yang dimiliki codespace-mu
+#   --force               timpa folder output kalau kamu menjalankannya lagi
 #
-# Prokka menjalankan beberapa tool sekaligus: Prodigal mencari gen penyandi
-# protein, barrnap mencari gen rRNA (termasuk 16S), Aragorn mencari gen tRNA,
-# lalu BLAST dan HMMER membandingkan gen dengan database untuk menebak
+# Prokka menjalankan beberapa tool sekaligus: Prodigal mencari protein-coding
+# gene, barrnap mencari rRNA gene (termasuk 16S), Aragorn mencari tRNA gene,
+# lalu BLAST dan HMMER membandingkan gene dengan database untuk memprediksi
 # fungsinya.
 
 prokka --outdir ecoli_k12 --prefix ecoli_k12 \
@@ -121,18 +121,19 @@ tail -n 3 prokka_run.log
 
 
 # -----------------------------------------------------------------------------
-# LANGKAH 5  Jelajahi hasilnya  
+# LANGKAH 5  Jelajahi output-nya
 # -----------------------------------------------------------------------------
-#   .txt  ringkasan jumlah fitur          .gff  semua fitur beserta posisinya
-#   .tsv  satu baris per fitur            .gbk  fitur + sekuens (GenBank)
-#   .ffn  DNA setiap gen (Minggu 3!)      .faa  protein setiap gen
+#   .txt  summary jumlah feature          .gff  semua feature beserta posisinya
+#   .tsv  satu baris per feature          .gbk  feature + sequence (GenBank)
+#   .ffn  DNA sequence setiap gene        .faa  protein sequence setiap gene
+#         (dipakai di Minggu 3!)
 #   .log  semua yang dilakukan Prokka
 
 ls -lh ecoli_k12/
 cat ecoli_k12/ecoli_k12.txt
 head -n 10 ecoli_k12/ecoli_k12.tsv
 
-# YANG SEHARUSNYA KAMU LIHAT (di ringkasan; angkanya bisa sedikit berbeda)
+# YANG SEHARUSNYA KAMU LIHAT (di summary; angkanya bisa sedikit berbeda)
 #   contigs: 1
 #   bases: 4641652
 #   CDS: sekitar 4.300–4.500
@@ -142,36 +143,37 @@ head -n 10 ecoli_k12/ecoli_k12.tsv
 # Tips: klik ecoli_k12/ecoli_k12.tsv di daftar file sebelah kiri untuk
 # membukanya sebagai tabel berwarna.
 #
-# CHECKPOINT: kolom mana yang akan kamu pakai untuk menghitung gen rRNA?
+# CHECKPOINT: kolom mana yang akan kamu pakai untuk menghitung rRNA gene?
 
 
 # -----------------------------------------------------------------------------
-# LANGKAH 6  Cari gen tertentu  
+# LANGKAH 6  Cari gene tertentu
 # -----------------------------------------------------------------------------
 
-# lacZ: beta-galaktosidase, dari lac-operon
+# lacZ: beta-galactosidase, dari lac operon
 grep -w "lacZ" ecoli_k12/ecoli_k12.tsv
 
 # Di mana letaknya? Kolom: sequence, type, start, end, strand
 grep "gene=lacZ;" ecoli_k12/ecoli_k12.gff | cut -f1,3,4,5,7
 
-# Kalau lacZ tidak ditemukan berdasarkan nama, cari berdasarkan produknya:
+# Kalau lacZ tidak ditemukan berdasarkan nama, cari berdasarkan product-nya:
 #   grep -i "beta-galactosidase" ecoli_k12/ecoli_k12.tsv
 
-# 16S rRNA: gen yang akan kita pakai untuk membuat pohon filogenetik di Minggu 3
+# 16S rRNA: gene yang akan kita pakai untuk membuat phylogenetic tree di
+# Minggu 3
 grep "16S ribosomal RNA" ecoli_k12/ecoli_k12.tsv
 grep -c "16S ribosomal RNA" ecoli_k12/ecoli_k12.tsv
 
 # YANG SEHARUSNYA KAMU LIHAT
-#   lacZ, sekitar 3.000 bp, produk Beta-galactosidase
-#   7 salinan 16S rRNA, masing-masing sekitar 1.500 bp
+#   lacZ, sekitar 3.000 bp, product Beta-galactosidase
+#   7 copy 16S rRNA, masing-masing sekitar 1.500 bp
 #
-# CHECKPOINT: di Minggu 3 kita hanya memakai satu salinan 16S per genom.
+# CHECKPOINT: di Minggu 3 kita hanya memakai satu 16S copy per genome.
 # Mengapa yang terpanjang?
 
 
 # -----------------------------------------------------------------------------
-# LANGKAH 7  Cek kewajaran anotasi  
+# LANGKAH 7  Cek kewajaran annotation
 # -----------------------------------------------------------------------------
 # Tiga uji: gene density (~1 gene per kb), persentase hypothetical protein,
 # dan jumlah rRNA/tRNA dibandingkan dengan yang sudah diketahui untuk
@@ -186,13 +188,13 @@ HYPO=$(awk -F'\t' '$2=="CDS" && $7=="hypothetical protein"{n++} END{print n+0}' 
 S16=$(awk -F'\t' '$7=="16S ribosomal RNA"{n++} END{print n+0}' $P.tsv)
 awk -v len="$LEN" -v cds="$CDS" -v hypo="$HYPO" -v rrna="${RRNA:-0}" \
     -v trna="${TRNA:-0}" -v s16="$S16" 'BEGIN{
-  printf "Panjang genom:            %d bp\n", len
-  printf "Gen penyandi protein:     %d\n", cds
-  printf "Gen per kb:               %.2f   (harapan sekitar 0,9-1,0)\n", cds/(len/1000)
-  printf "Protein hipotetis:        %d (%.0f%% dari CDS)\n", hypo, 100*hypo/cds
-  printf "Gen rRNA:                 %d\n", rrna
-  printf "Salinan 16S:              %d   (harapan 7 untuk E. coli)\n", s16
-  printf "Gen tRNA:                 %d\n", trna
+  printf "Genome length:            %d bp\n", len
+  printf "Protein-coding genes:     %d\n", cds
+  printf "Genes per kb:             %.2f   (harapan sekitar 0.9-1.0)\n", cds/(len/1000)
+  printf "Hypothetical proteins:    %d (%.0f%% dari CDS)\n", hypo, 100*hypo/cds
+  printf "rRNA genes:               %d\n", rrna
+  printf "16S copies:               %d   (harapan 7 untuk E. coli)\n", s16
+  printf "tRNA genes:               %d\n", trna
 }'
 
 # BANDINGKAN DENGAN NCBI
@@ -201,7 +203,7 @@ awk -v len="$LEN" -v cds="$CDS" -v hypo="$HYPO" -v rrna="${RRNA:-0}" \
 # rRNA, dan tRNA dari NCBI di samping hasilmu. Selisih beberapa persen saja
 # berarti hasilmu bagus.
 #
-# CHECKPOINT: genom proyekmu nanti tidak punya "jawaban benar".
+# CHECKPOINT: genome proyekmu nanti tidak punya "jawaban benar".
 # Uji mana dari ketiga uji ini yang tetap bisa kamu jalankan?
 
 
@@ -209,18 +211,18 @@ awk -v len="$LEN" -v cds="$CDS" -v hypo="$HYPO" -v rrna="${RRNA:-0}" \
 # LANGKAH 8  Simpan pekerjaanmu ke GitHub
 # -----------------------------------------------------------------------------
 # File-mu tetap tersimpan di codespace, tetapi portofoliomu adalah repo
-# GitHub-mu. File berukuran besar (genom yang diunduh, .gbk, dan lainnya)
-# otomatis dilewati oleh file .gitignore.
+# GitHub-mu. File berukuran besar (genome yang di-download, .gbk, dan
+# lainnya) otomatis dilewati oleh file .gitignore.
 
 cd "$(git rev-parse --show-toplevel)"
 git add week2
-git commit -m "Minggu 2: anotasi E. coli K-12 dengan Prokka"
+git commit -m "Minggu 2: genome annotation E. coli K-12 dengan Prokka"
 git push
 git status
 
 # YANG SEHARUSNYA KAMU LIHAT
 #   "Your branch is up to date with 'origin/main'"
-#   Muat ulang halaman repo-mu di GitHub: folder week2 sekarang berisi hasilmu.
+#   Refresh halaman repo-mu di GitHub: folder week2 sekarang berisi hasilmu.
 #
 # Sudah selesai untuk hari ini? Hentikan codespace agar jatah gratis kita awet:
 #   github.com/codespaces → ⋯ di samping codespace-mu → Stop codespace
@@ -236,12 +238,12 @@ git status
 #  "fatal: not a git repository"
 #      Kamu sedang di luar folder repo. Jalankan Langkah 1 lagi.
 #
-#  Unduhan datasets gagal atau macet
+#  Download datasets gagal atau macet
 #      NCBI sedang sibuk atau koneksi terputus. Tunggu sebentar, lalu ulangi
 #      Langkah 2.
 #
 #  "cp: ... _genomic.fna: No such file or directory"
-#      Unduhan atau unzip belum selesai. Ulangi Langkah 2.
+#      Download atau unzip belum selesai. Ulangi Langkah 2.
 #
 #  Log Prokka diakhiri dengan ERROR
 #      Baca penyebabnya:  tail -n 20 prokka_run.log
@@ -256,12 +258,12 @@ git status
 #      Langkah 4 lagi.
 #
 #  Langkah 7 menampilkan "division by zero"
-#      Prokka belum selesai, sehingga ringkasannya kosong. Cek Langkah 4 dulu.
+#      Prokka belum selesai, sehingga summary-nya kosong. Cek Langkah 4 dulu.
 #
 #  git push meminta password atau ditolak
 #      Hubungi TA-mu. Biasanya Codespaces mengurus ini secara otomatis.
 #
 #  Masih bingung? Tulis di grup WhatsApp dengan menyertakan: langkah yang
-#  sedang dikerjakan, pesan error lengkap (salin-tempel), dan apa saja yang
+#  sedang dikerjakan, pesan error lengkap (copy-paste), dan apa saja yang
 #  sudah kamu coba.
 # =============================================================================
